@@ -28,9 +28,15 @@ def get_neighborhoods(D, I, eps):
     neighborhoods = []
     for i in range(len(D)):
         distances = D[i]
+        #print(distances)
+        distances = np.delete(distances, 0)
         indices = I[i]
+        indices = np.delete(indices, 0)
+        #print(indices)
         index = indices[distances <= eps]
         neighborhoods.append(index)
+    #neighborhoods = np.asarray(neighborhoods)
+    #np.savetxt('faiss_neighborhoods', np.asarray(neighborhoods), fmt='%s')
     return np.asarray(neighborhoods)
 
 def cpu_radius_neighbors(X, eps, min_samples, nlist, nprobe, return_distance=False, IVFFlat=True):
@@ -46,14 +52,18 @@ def cpu_radius_neighbors(X, eps, min_samples, nlist, nprobe, return_distance=Fal
     else:
         index_cpu = faiss.IndexFlatL2(dimension)
     index_cpu.add(X)
-    n_samples = 10
+    n_samples = 1000
     k = min_samples
     samples = np.random.choice(len(X), n_samples)
     # print(samples)
     D, I = index_cpu.search(X[samples], k)  # sanity check
-    while np.max(D[:, k - 1]) < eps:
+    while np.min(np.amax(D, axis=1)) < eps:
         k = k * 2
+       # D, I = index_gpu.search(X[samples], k)
+        #print(np.min(np.amax(D, axis=1)), eps, k)
         D, I = index_cpu.search(X[samples], k)
+    if k > 1024:
+        k = 1000
         #print(np.max(D[:, k - 1]), k, eps)
     index_cpu.nprobe = nprobe
     D, I = index_cpu.search(X, k)  # actual search
@@ -83,7 +93,7 @@ def gpu_radius_neighbors(X, eps, min_samples, nlist, nprobe, return_distance=Fal
         flat_config.device = 0
         index_gpu = faiss.index_cpu_to_gpu(res, 0, index_cpu)
     index_gpu.add(X)
-    n_samples = 10
+    n_samples = 1000
     k = min_samples
     samples = np.random.choice(len(X), n_samples)
     # print(samples)
