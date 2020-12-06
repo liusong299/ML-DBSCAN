@@ -1,0 +1,12 @@
+WARNING clustering 10000 points to 1000 centroids: please provide at least 39000 training points
+WARNING clustering 10000 points to 1000 centroids: please provide at least 39000 training points
+Faiss_DBSCAN(GPU=True, IVFFlat=True, eps=1, metric='l2', min_samples=5,
+       n_jobs=1, nlist=1000, nprobe=10)
+Clustering using Faiss GPU DBSCAN based on IVFFlat Time Cost: 1.9034292697906494
+Estimated number of clusters: 778
+Faiss_DBSCAN(GPU=False, IVFFlat=True, eps=1, metric='l2', min_samples=5,
+       n_jobs=1, nlist=1000, nprobe=10)
+Clustering using Faiss CPU DBSCAN based on IVFFlat Time Cost: 1.591015338897705
+Estimated number of clusters: 439
+Clustering using Scikit-Learn DBSCAN Time Cost: 0.15668773651123047
+Estimated number of clusters: 247
